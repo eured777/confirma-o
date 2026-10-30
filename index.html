@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirmação de Pedido</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; margin-bottom: 20px; }
+    img {
+      width: 50%;
+      margin: auto;
+      display: block;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #25d366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1ebc57;
+    }
+    .linha {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .linha-pequena {
+      width: 100px;
+    }
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .container { padding: 20px 15px; }
+      input, select, button { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Enviar Confirmação via WhatsApp</h2>
+    <img src="logo.png" alt="Logo">
+
+    <div class="linha">
+      <div class="linha-pequena">
+        <label for="codigoCliente">Código:</label>
+        <input type="text" id="codigoCliente" placeholder="Ex: 11" />
+      </div>
+      <div style="flex: 1;">
+        <label for="cliente">Nome do Cliente:</label>
+        <input type="text" id="cliente" placeholder="Digite o nome do cliente" />
+      </div>
+    </div>
+
+    <label for="numero">Número do Cliente (com DDI):</label>
+    <input type="text" id="numero" placeholder="+55..." />
+
+    <label for="valor">Valor do Pedido (R$):</label>
+    <input type="text" id="valor" placeholder="Ex: 123,45" />
+
+    <label for="dataPedido">Data do Pedido:</label>
+    <input type="date" id="dataPedido" />
+
+    <div class="linha">
+      <div class="linha-pequena">
+        <label for="rca">RCA:</label>
+        <input type="text" id="rca" placeholder="Ex: 923" />
+      </div>
+      <div style="flex: 1;">
+        <label for="vendedor">Selecione o Vendedor:</label>
+        <select id="vendedor">
+          <option value="">Selecione...</option>
+          <option value="vendedora Telma Ferreira (RCA 319)">vendedora Telma Ferreira (319)</option>
+          <option value="vendedor Alzimar (988)">vendedor Alzimar (988)</option>
+          <option value="vendedora Simone Maria (921)">vendedora Simone Maria (921)</option>
+          <option value="vendedor Leandro Nunes (923)">vendedor Leandro Nunes (923)</option>
+          <option value="vendedora Emanuelle Moura (914)">vendedora Emanuelle Moura (914)</option>
+          <option value="vendedora Helem MDLZ (982)">vendedora Helem MDLZ (982)</option>
+          <option value="vendedora Helem Marcia (703)">vendedora Helem Marcia (703)</option>
+          <option value="vendedor Gusttavo Almeida (908)">vendedor Gusttavo Almeida (908)</option>
+          <option value="vendedora Eliany Silva (913)">vendedora Eliany Silva (913)</option>
+          <option value="vendedora Alexsandra (929)">vendedora Alexsandra (929)</option>
+          <option value="vendedora Interna Rose (661)">vendedora Interna Rose (661)</option>
+          <option value="vendedora Interna Ruth (660)">vendedora Interna Ruth (660)</option>
+          <option value="vendedor Interna Gefersom (719)">vendedor Interna Gefersom (719)</option>
+          <option value="vendedor Interna Abraão (904)">vendedor Interna Abraão (904)</option>
+          <option value="vendedor Interno Rosildo (906)">vendedor Interno Rosildo (906)</option>
+          <option value="vendedora Interna Andea (927)">vendedora Interna Andea (927)</option>
+          <option value="vendedor Interna Igor Sena (933)">vendedor Interna Igor Sena (933)</option>
+          <option value="vendedora Interna Suelem (919)">vendedora Interna Suelem (919)</option>
+          <option value="vendedora Cheila (937)">vendedora Cheila (937)</option>
+          <option value="Supervisor Fabricio (12)">Supervisor Fabricio (12)</option>
+          <option value="Supervisor Alexsandro (35)">Supervisor alexsandro (35)</option>
+          <option value="Supervisora Elicarla (21)">Supervisora Elicarla (21)</option>
+        </select>
+      </div>
+    </div>
+
+    <button onclick="enviarMensagem()">📤 Enviar Mensagem</button>
+  </div>
+
+  <script src="clientes.js"></script>
+<script>
+  function formatarDataBrasileira(data) {
+    const partes = data.split("-");
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
+
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  function obterSaudacao() {
+    const hora = new Date().getHours();
+    if (hora < 13) return "Bom dia";
+    if (hora < 18) return "Boa tarde";
+    return "Boa noite";
+  }
+
+  const rcaParaVendedor = {
+    "319": "vendedora Telma Ferreira (RCA 319)",
+    "988": "vendedor Alzimar (988)",
+    "921": "vendedora Simone Maria (921)",
+    "923": "vendedor Leandro Nunes (923)",
+    "914": "vendedora Emanuelle Moura (914)",
+    "982": "vendedora Helem MDLZ (982)",
+    "703": "vendedora Helem Marcia (703)",
+    "908": "vendedor Gusttavo Almeida (908)",
+    "913": "vendedora Eliany Silva (913)",
+    "929": "vendedora Alexsandra (929)",
+    "661": "vendedora Interna Rose (661)",
+    "660": "vendedora Interna Ruth (660)",
+    "719": "vendedor Interna Gefersom (719)",
+    "904": "vendedor Interna Abraão (904)",
+    "906": "vendedor Interno Rosildo (906)",
+    "927": "vendedora Interna Andea (927)",
+    "933": "vendedor Interna Igor Sena (933)",
+    "919": "vendedora Interna Suelem (919)",
+    "937": "vendedora Cheila (937)",
+    "21": "Supervisora Elicarla (21)",
+    "12": "Supervisor Fabricio (12)",
+    "35": "Supervisor Alexsandro (35)"
+  };
+
+  // 🔥 NOVO: variável global para controlar a aba do WhatsApp
+  let whatsappAba = null;
+
+  // Preenche nome + número ao digitar código do cliente
+  document.getElementById("codigoCliente").addEventListener("input", function () {
+    const codigo = this.value.trim();
+    const cliente = clientes.find(c => c.codigo === codigo);
+    if (cliente) {
+      document.getElementById("cliente").value = cliente.nome;
+      document.getElementById("numero").value = cliente.numero;
+    }
+  });
+
+  // Preenche vendedor ao digitar RCA
+  document.getElementById("rca").addEventListener("input", function () {
+    const codigo = this.value.trim();
+    const vendedor = rcaParaVendedor[codigo];
+    if (vendedor) {
+      const select = document.getElementById("vendedor");
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === vendedor) {
+          select.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  });
+
+  function enviarMensagem() {
+    const codigo = document.getElementById("codigoCliente").value.trim();
+    const cliente = document.getElementById("cliente").value.trim();
+    const numero = document.getElementById("numero").value.trim();
+    const valor = document.getElementById("valor").value.trim();
+    const dataPedido = document.getElementById("dataPedido").value;
+    const vendedor = document.getElementById("vendedor").value;
+
+    if (!cliente || !numero || !valor || !vendedor || !dataPedido) {
+      alert("Por favor, preencha todos os campos.");
+      return;
+    }
+
+    const dataFormatada = formatarDataBrasileira(dataPedido);
+    const saudacao = obterSaudacao();
+
+    // ===============================
+    // PRAZO DINÂMICO
+    // ===============================
+
+    const agora = new Date();
+    const hora = agora.getHours();
+    const diaSemana = agora.getDay(); // 0 = domingo, 6 = sábado
+
+    let prazoTexto = "";
+
+    if (diaSemana === 6) {
+      prazoTexto = "até as 12hrs";
+    } 
+    else if (hora >= 18) {
+      const novoHorario = new Date(agora.getTime() + 10 * 60000);
+      const novaHora = novoHorario.getHours().toString().padStart(2, '0');
+      const novoMinuto = novoHorario.getMinutes().toString().padStart(2, '0');
+      prazoTexto = `até as ${novaHora}:${novoMinuto}`;
+    } 
+    else if (hora >= 17) {
+      prazoTexto = "até as 18hrs";
+    } 
+    else {
+      prazoTexto = "até as 17hrs";
+    }
+
+    const mensagem =
+      `${saudacao} ${codigo} ${cliente}, tudo bem?%0A%0A` +
+      `Somos da equipe financeira da empresa Fribel. Verificamos seu pedido feito com nosso(a) ${vendedor} em ${dataFormatada} no valor de R$ ${valor}.%0A%0A` +
+      `Você confirma a compra para que possamos prosseguir com o envio?%0A%0A` +
+      `Aguardamos sua resposta ${prazoTexto}. Caso contrário, o pedido fica pendente por falta de confirmação. 😊`;
+
+    const telefone = numero.replace(/\D/g, '');
+    const baseUrl = isMobile()
+      ? 'https://api.whatsapp.com/send'
+      : 'https://web.whatsapp.com/send';
+
+    const url = `${baseUrl}?phone=${telefone}&text=${mensagem}`;
+
+    // 🔥 NOVA LÓGICA: reutiliza a mesma aba
+    if (!whatsappAba || whatsappAba.closed) {
+      whatsappAba = window.open(url, 'whatsappWindow');
+    } else {
+      whatsappAba.location.href = url;
+      whatsappAba.focus();
+    }
+
+    // limpa os campos após enviar
+    document.getElementById("codigoCliente").value = "";
+    document.getElementById("cliente").value = "";
+    document.getElementById("numero").value = "";
+    document.getElementById("valor").value = "";
+    document.getElementById("rca").value = "";
+    document.getElementById("vendedor").selectedIndex = 0;
+  }
+</script>
+</body>
+</html>
